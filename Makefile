@@ -1453,21 +1453,40 @@ endif
 
 ifeq ($(CONFIG_PLATFORM_OPENWRT), y)
 
-# OpenWrt is cross-compiled and uses cfg80211/mac80211
+#export PATH=$PATH:/home/nearology/buildenv/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-12.3.0_musl/bin
+OPENWRT_TOP ?= /home/nearology/buildenv/openwrt
+OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-12.3.0_musl
+KVER ?= 5.15.198
+KSRC ?= $(OPENWRT_TOP)/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-$(KVER)
+export PATH := $(OPENWRT_TOOLCHAIN)/bin:$(PATH)
+# ===== Architecture =====
+ARCH ?= mips
+CROSS_COMPILE ?= mipsel-openwrt-linux-musl-
+# ===== Required flags =====
+EXTRA_CFLAGS += -Wno-error
+EXTRA_CFLAGS += -Wno-error=misleading-indentation
+EXTRA_CFLAGS += -Wno-misleading-indentation
 EXTRA_CFLAGS += -DBUILD_OPENWRT
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 
-# IMPORTANT:
-# This Makefile uses: obj-$(CONFIG_RTL8822EU) := $(MODULE_NAME).o
-# During OpenWrt builds we are in the KERNELRELEASE branch, so we MUST
-# ensure CONFIG_RTL8822EU is set to m (or y) here, otherwise no .ko is built.
-CONFIG_RTL8822EU := m
+# Include paths for standalone Kbuild usage
+EXTRA_CFLAGS += -I$(src)
+EXTRA_CFLAGS += -I$(src)/include
+EXTRA_CFLAGS += -I$(src)/core
+EXTRA_CFLAGS += -I$(src)/os_dep
+EXTRA_CFLAGS += -I$(src)/platform
+EXTRA_CFLAGS += -I$(src)/hal
+EXTRA_CFLAGS += -I$(src)/hal/phydm
+EXTRA_CFLAGS += -I$(src)/hal/phydm/halrf
+
+# Ensure module actually builds
+CONFIG_RTL8822EU ?= m
 
 endif
 
 
-ifeq ($(CONFIG_PLATFORM_ARM_RPI), y)
+ifeq ($(	CONFIG_PLATFORM_ARM_RPI), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 ARCH ?= arm
