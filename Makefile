@@ -1456,6 +1456,7 @@ ifeq ($(CONFIG_PLATFORM_OPENWRT), y)
 #export PATH=$PATH:/home/nearology/buildenv/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl/bin
 OPENWRT_TOP ?= /home/nearology/buildenv/openwrt
 OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl
+OPENWRT_BACKPORTS_DIR ?= $(firstword $(wildcard $(OPENWRT_TOP)/build_dir/target-*/linux-*/mac80211-regular/backports-*))
 KVER ?= 6.6.118
 KSRC ?= $(OPENWRT_TOP)/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-$(KVER)
 export PATH := $(OPENWRT_TOOLCHAIN)/bin:$(PATH)
@@ -1469,6 +1470,9 @@ EXTRA_CFLAGS += -Wno-misleading-indentation
 EXTRA_CFLAGS += -DBUILD_OPENWRT
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
+ifneq ($(OPENWRT_BACKPORTS_DIR),)
+EXTRA_CFLAGS += -DRTW_CFG80211_BACKPORT_CHAN_LAYOUT
+endif
 
 # Include paths for standalone Kbuild usage
 EXTRA_CFLAGS += -I$(src)
