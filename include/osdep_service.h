@@ -49,6 +49,7 @@
 
 #ifdef PLATFORM_LINUX
 	#include <linux/version.h>
+	#include <openwrt_cfg80211_map.h>
 #if defined(CONFIG_RTW_ANDROID_GKI)
 	#include <linux/firmware.h>
 #endif
