@@ -1453,10 +1453,10 @@ endif
 
 ifeq ($(CONFIG_PLATFORM_OPENWRT), y)
 
-#export PATH=$PATH:/home/nearology/buildenv/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-12.3.0_musl/bin
+#export PATH=$PATH:/home/nearology/buildenv/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl/bin
 OPENWRT_TOP ?= /home/nearology/buildenv/openwrt
-OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-12.3.0_musl
-KVER ?= 5.15.198
+OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl
+KVER ?= 6.6.118
 KSRC ?= $(OPENWRT_TOP)/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-$(KVER)
 export PATH := $(OPENWRT_TOOLCHAIN)/bin:$(PATH)
 # ===== Architecture =====
