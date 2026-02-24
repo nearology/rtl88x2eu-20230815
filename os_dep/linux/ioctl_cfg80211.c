@@ -1054,6 +1054,7 @@ int rtw_cfg80211_check_bss(_adapter *padapter)
 
 	freq = rtw_ch2freq(pnetwork->Configuration.DSConfig);
 	notify_channel = ieee80211_get_channel(padapter->rtw_wdev->wiphy, freq);
+#if 0
 	bss = cfg80211_get_bss(padapter->rtw_wdev->wiphy, notify_channel,
 			pnetwork->MacAddress, pnetwork->Ssid.Ssid,
 			pnetwork->Ssid.SsidLength,
@@ -1068,6 +1069,7 @@ int rtw_cfg80211_check_bss(_adapter *padapter)
 	cfg80211_put_bss(padapter->rtw_wdev->wiphy, bss);
 #else
 	cfg80211_put_bss(bss);
+#endif
 #endif
 
 	return bss != NULL;
@@ -3058,7 +3060,7 @@ void rtw_cfg80211_unlink_bss(_adapter *padapter, struct wlan_network *pnetwork)
 	struct wireless_dev *pwdev = padapter->rtw_wdev;
 	struct wiphy *wiphy = pwdev->wiphy;
 	struct cfg80211_bss *bss = NULL;
-
+ #if 0
 	bss = cfg80211_get_bss(wiphy, NULL/*notify_channel*/,
 		pnetwork->network.MacAddress, pnetwork->network.Ssid.Ssid,
 		pnetwork->network.Ssid.SsidLength,
@@ -3079,6 +3081,8 @@ void rtw_cfg80211_unlink_bss(_adapter *padapter, struct wlan_network *pnetwork)
 		cfg80211_put_bss(bss);
 #endif
 	}
+
+	#endif
 	return;
 }
 
