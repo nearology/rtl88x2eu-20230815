@@ -1453,41 +1453,41 @@ endif
 
 ifeq ($(CONFIG_PLATFORM_OPENWRT), y)
 
-#export PATH=$PATH:/home/nearology/buildenv/openwrt/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl/bin
+
 OPENWRT_TOP ?= /home/nearology/buildenv/openwrt
-OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-13.3.0_musl
-OPENWRT_BACKPORTS_DIR ?= $(firstword $(wildcard $(OPENWRT_TOP)/build_dir/target-*/linux-*/mac80211-regular/backports-*))
-KVER ?= 6.6.118
+OPENWRT_TOOLCHAIN ?= $(OPENWRT_TOP)/staging_dir/toolchain-mipsel_24kc_gcc-14.3.0_musl
+export STAGING_DIR="$OPENWRT_TOP/staging_dir"
+
+KVER ?= 6.12.71
 KSRC ?= $(OPENWRT_TOP)/build_dir/target-mipsel_24kc_musl/linux-ramips_mt76x8/linux-$(KVER)
+KOUT ?= $(KSRC)
+
 export PATH := $(OPENWRT_TOOLCHAIN)/bin:$(PATH)
-# ===== Architecture =====
+
 ARCH ?= mips
 CROSS_COMPILE ?= mipsel-openwrt-linux-musl-
-# ===== Required flags =====
-EXTRA_CFLAGS += -Wno-error
-EXTRA_CFLAGS += -Wno-error=misleading-indentation
-EXTRA_CFLAGS += -Wno-misleading-indentation
-EXTRA_CFLAGS += -DBUILD_OPENWRT
-EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
-EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
-ifneq ($(OPENWRT_BACKPORTS_DIR),)
-EXTRA_CFLAGS += -DRTW_CFG80211_BACKPORT_CHAN_LAYOUT
-endif
 
-# Include paths for standalone Kbuild usage
-EXTRA_CFLAGS += -I$(src)
-EXTRA_CFLAGS += -I$(src)/include
-EXTRA_CFLAGS += -I$(src)/core
-EXTRA_CFLAGS += -I$(src)/os_dep
-EXTRA_CFLAGS += -I$(src)/platform
-EXTRA_CFLAGS += -I$(src)/hal
-EXTRA_CFLAGS += -I$(src)/hal/phydm
-EXTRA_CFLAGS += -I$(src)/hal/phydm/halrf
+EXTRA_CFLAGS += \
+	-I$(KOUT)/include \
+	-I$(KOUT)/include/uapi \
+	-I$(KOUT)/arch/$(ARCH)/include \
+	-I$(KOUT)/arch/$(ARCH)/include/uapi \
+	-I$(KOUT)/include/generated \
+	-I$(KOUT)/include/generated/uapi \
+	-I$(KOUT)/arch/$(ARCH)/include/generated \
+	-I$(KOUT)/arch/$(ARCH)/include/generated/uapi
 
-# Ensure module actually builds
+EXTRA_CFLAGS += -Wno-error -Wno-error=empty-body
+
+EXTRA_CFLAGS += \
+	-DCONFIG_LITTLE_ENDIAN \
+	-DCONFIG_IOCTL_CFG80211 \
+	-DRTW_USE_CFG80211_STA_EVENT
+
 CONFIG_RTL8822EU ?= m
 
 endif
+
 
 
 ifeq ($(	CONFIG_PLATFORM_ARM_RPI), y)
